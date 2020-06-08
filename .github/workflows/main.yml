@@ -32,4 +32,4 @@ jobs:
       run: dotnet pack -c Release  
 
     - name: Push
-      run: dotnet nuget push ./*.nupkg --api-key ${{secrets.NUGET}}
+      run: dotnet nuget push ./*.nupkg --api-key ${{secrets.NUGET}} --source https://api.nuget.org/v3/index.json
