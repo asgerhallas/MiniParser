@@ -19,7 +19,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
       env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NUGET_AUTH_TOKEN: ${{secrets.NUGET}}
 
     - name: Install dependencies
       run: dotnet restore
