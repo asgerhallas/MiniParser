@@ -29,7 +29,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
       
     - name: Pack
-      run: dotnet pack -c Release --include-symbols -p:SymbolPackageFormat=snupkg
+      run: dotnet pack -c Release --include-symbols -p:SymbolPackageFormat=snupkg -p:PackageVersion=1.0.$GITHUB_RUN_NUMBER
 
     - name: Push
       run: dotnet nuget push ./**/*.nupkg --api-key ${{secrets.NUGET}} --source https://api.nuget.org/v3/index.json
