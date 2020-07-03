@@ -9,9 +9,9 @@ namespace MiniParser
         public bool Success => Item1;
         public string Rest => Item2;
 
-        public Parsed Stop(out string result)
+        public Parsed Stop<T>(out T result)
         {
-            result = "";
+            result = default;
             return this;
         }
 

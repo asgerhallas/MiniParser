@@ -21,7 +21,7 @@ namespace MiniParser.Tests
             var parsed = new Parsed(false, "fixed.Blah").After("fixed.", out var result);
 
             parsed.ShouldBe(new Parsed(false, "fixed.Blah"));
-            result.ShouldBe("");
+            result.ShouldBe(default);
         }
 
         [Fact]
@@ -48,7 +48,16 @@ namespace MiniParser.Tests
             var parsed = new Parsed(false, "a/b").Until("/", out var result);
 
             parsed.ShouldBe(new Parsed(false, "a/b"));
-            result.ShouldBe("");
+            result.ShouldBe(default);
+        }
+
+        [Fact]
+        public void ParseUntil_Multiple()
+        {
+            var parsed = "a/b/c".Until("/", out var result);
+
+            parsed.ShouldBe(new Parsed(true, "b/c"));
+            result.ShouldBe("a");
         }
 
         [Fact]
@@ -85,8 +94,91 @@ namespace MiniParser.Tests
             var parsed = new Parsed(false, "asger").End(out var first);
 
             parsed.ShouldBe(new Parsed(false, "asger"));
-            first.ShouldBe("");
+            first.ShouldBe(default);
+        }
+
+        [Fact]
+        public void ParseRegex()
+        {
+            var parsed = "asger".Regex("as");
+
+            parsed.ShouldBe(new Parsed(true, "ger"));
+        }
+
+        [Fact]
+        public void ParseRegex_NoMatch()
+        {
+            var parsed = "asger".Regex("kurt");
+
+            parsed.ShouldBe(new Parsed(false, "asger"));
+        }
+
+        [Fact]
+        public void ParseRegex_FromMiddle()
+        {
+            var parsed = "asger".Regex("sg");
+
+            parsed.ShouldBe(new Parsed(true, "er"));
+        }
+
+        [Fact]
+        public void ParseRegex_ExplicitBeginning()
+        {
+            var parsed = "asger".Regex("^sg");
+
+            parsed.ShouldBe(new Parsed(false, "asger"));
+        }
+
+        [Fact]
+        public void ParseRegex_MultipleMatches()
+        {
+            var parsed = "rokoko".Regex("ok");
+
+            parsed.ShouldBe(new Parsed(true, "oko"));
+        }
+
+        [Fact]
+        public void ParseRegex_UntilEnd()
+        {
+            var parsed = "asger".Regex(".*");
+
+            parsed.ShouldBe(new Parsed(true, ""));
+        }
+
+        [Fact]
+        public void ParseRegex_UntilEnd_Explicit()
+        {
+            var parsed = "asger".Regex(".*$");
+
+            parsed.ShouldBe(new Parsed(true, ""));
+        }
+
+        [Fact]
+        public void ParseRegex_Capture()
+        {
+            var parsed = "asger".Regex("a(.*)e", out var capture1);
+
+            capture1.ShouldBe("sg");
+            parsed.ShouldBe(new Parsed(true, "r"));
+        }
+
+        [Fact]
+        public void ParseRegex_Capture_Convert()
+        {
+            var parsed = "a100r".Regex("a(.*)r", out int capture1);
+
+            capture1.ShouldBe(100);
+            parsed.ShouldBe(new Parsed(true, ""));
+        }
+
+
+        [Fact(Skip = "Do we actually want to support this? You can just parentherize what you need...")]
+        public void ParseRegex_Capture_ImplicitAll()
+        {
+            var parsed = "asger".Regex("a.*e", out var capture1);
+
+            capture1.ShouldBe("asge");
+            parsed.ShouldBe(new Parsed(true, "r"));
         }
     }
-
 }
