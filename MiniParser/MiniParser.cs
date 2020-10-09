@@ -20,7 +20,7 @@ namespace MiniParser
                 return new Parsed(true, "");
             }
 
-            result = "";
+            result = default;
             return new Parsed(false, input.Rest);
         }
 
@@ -31,14 +31,31 @@ namespace MiniParser
 
             var strings = input.Rest.Split(new[] {delimiter}, 2, StringSplitOptions.None);
 
-            if (strings.Length == 1)
+            if (strings.Length == 2)
             {
-                result = "";
-                return new Parsed(false, input.Rest);
+                result = strings[0];
+                return new Parsed(true, strings[1]);
             }
 
-            result = strings[0];
-            return new Parsed(true, strings[1]);
+            result = default;
+            return new Parsed(false, input.Rest);
+        }
+        
+        public static Parsed UntilLast(this string input, string delimiter, out string result) => Parsed.From(input).UntilLast(delimiter, out result);
+        public static Parsed UntilLast(this Parsed input, string delimiter, out string result)
+        {
+            if (!input.Success) return input.Stop(out result);
+
+            var lastIndexOf = input.Rest.LastIndexOf(delimiter, StringComparison.InvariantCulture);
+
+            if (lastIndexOf > -1)
+            {
+                result = input.Rest.Substring(0, lastIndexOf);
+                return new Parsed(true, input.Rest.Substring(lastIndexOf));
+            }
+
+            result = default;
+            return new Parsed(false, input.Rest);
         }
 
         public static Parsed End(this string input, out string result) => Parsed.From(input).End(out result);

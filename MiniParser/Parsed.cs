@@ -22,6 +22,11 @@ namespace MiniParser
             return this;
         }
 
+        public void OrThrow()
+        {
+            if (!Success) throw new ArgumentException($"Could not parse {Rest}.");
+        }
+
         public static Parsed From(string input) => new Parsed(true, input);
 
         public static implicit operator Parsed(string value) => new Parsed(true, value);

@@ -30,7 +30,7 @@ namespace MiniParser.Tests
             var parsed = "not.Blah".After("fixed.", out var result);
 
             parsed.ShouldBe(new Parsed(false, "not.Blah"));
-            result.ShouldBe("");
+            result.ShouldBe(default);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace MiniParser.Tests
             var parsed = "a-b".Until("/", out var result);
 
             parsed.ShouldBe(new Parsed(false, "a-b"));
-            result.ShouldBe("");
+            result.ShouldBe(default);
         }
 
         [Fact]
@@ -95,6 +95,33 @@ namespace MiniParser.Tests
 
             parsed.ShouldBe(new Parsed(false, "asger"));
             first.ShouldBe(default);
+        }
+
+        [Fact]
+        public void ParseUntilLast()
+        {
+            var parsed = "a,b,c".UntilLast(",", out var result);
+
+            result.ShouldBe("a,b");
+            parsed.ShouldBe(new Parsed(true, ",c"));
+        }
+
+        [Fact]
+        public void ParseUntilLast_Stops()
+        {
+            var parsed = new Parsed(false, "a,b,c").UntilLast(",", out var result);
+
+            result.ShouldBe(default);
+            parsed.ShouldBe(new Parsed(false, "a,b,c"));
+        }
+
+        [Fact]
+        public void ParseUntilLast_NotFound()
+        {
+            var parsed = "a-b-c".UntilLast(",", out var result);
+
+            result.ShouldBe(default);
+            parsed.ShouldBe(new Parsed(false, "a-b-c"));
         }
 
         [Fact]
