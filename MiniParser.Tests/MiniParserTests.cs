@@ -171,6 +171,25 @@ namespace MiniParser.Tests
             parsed.ShouldBe(new Parsed(true, ""));
         }
 
+        [Fact]
+        public void ParseRegex_Capture2()
+        {
+            var parsed = "asger".Regex("a(.*)(.)r", out string capture1, out string capture2);
+
+            capture1.ShouldBe("sg");
+            capture2.ShouldBe("e");
+            parsed.ShouldBe(new Parsed(true, ""));
+        }
+
+        [Fact]
+        public void ParseRegex_Capture2_Convert()
+        {
+            var parsed = "a100r03C7F07D-BF1D-4E49-BFBE-5933AD081CFD".Regex("a(.*)r(.*)", out int capture1, out Guid capture2);
+
+            capture1.ShouldBe(100);
+            capture2.ShouldBe(Guid.Parse("03C7F07D-BF1D-4E49-BFBE-5933AD081CFD"));
+            parsed.ShouldBe(new Parsed(true, ""));
+        }
 
         [Fact(Skip = "Do we actually want to support this? You can just parentherize what you need...")]
         public void ParseRegex_Capture_ImplicitAll()

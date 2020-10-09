@@ -15,6 +15,13 @@ namespace MiniParser
             return this;
         }
 
+        public Parsed Stop<T1, T2>(out T1 result1, out T2 result2)
+        {
+            result1 = default;
+            result2 = default;
+            return this;
+        }
+
         public static Parsed From(string input) => new Parsed(true, input);
 
         public static implicit operator Parsed(string value) => new Parsed(true, value);
